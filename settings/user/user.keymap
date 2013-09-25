@@ -1,0 +1,36 @@
+;; User keymap
+;; -----------------------------
+;; Keymaps are stored as a set of diffs that are merged together together
+;; to create the final set of keys. You can modify these diffs to either add
+;; or subtract bindings.
+;;
+;; Like behaviors, keys are bound by tag. When objects with those tags are active
+;; the key bindings are live. Keys can be bound to any number of Light Table commands,
+;; allowing you the flexibility to execute multiple operations together. To see a list
+;; of all the commands you can execute, start typing a word related to the thing you
+;; want to do in between the square brackets (e.g. type "editor").
+
+{:+ {:app {"pmeta-alt-o" [:workspace.show]
+           "pmeta-k" [:clear-console]
+           "pmeta-alt-k" [:toggle-console]
+           "pmeta-alt-]" [:tabset.next]
+           "pmeta-alt-[" [:tabset.prev]
+           "pmeta-alt-n" [:tabset.new]
+           "pmeta-alt-w" [:tabset.close]
+           "pmeta-shift-f" [:window.fullscreen]
+           "pmeta-alt-f" [:searcher.show]
+           "pmeta-f" [:find.fill-selection :find.show]}
+
+     :editor {"alt-w" [:editor.watch.watch-selection]
+              "alt-shift-w" [:editor.watch.unwatch]
+              "alt-shift-," [:editor.doc-start]
+              "alt-shift-." [:editor.doc-end]
+              "alt-m" [:editor.line-start-smart]
+              "esc" [:find.clear :find.hide]}
+
+     :editor.keys.normal {"esc" [:find.clear :find.hide]}
+
+     :find-bar {"enter" [:find.hide]}
+
+     :filter-list.input {"ctrl-n" [(:filter-list.input.move-selection 1)],
+                         "ctrl-p" [(:filter-list.input.move-selection -1)]}}}
