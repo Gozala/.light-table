@@ -129,10 +129,7 @@ http://ethanschoonover.com/solarized/img/solarized-palette.png
   border-color: #00232c;
 }
 
-.cm-s-solarized .CodeMirror-linenumber {
-}
-
-/* Common */
+.cm-s-solarized .CodeMirror-linenumber,
 .cm-s-solarized .CodeMirror-linenumbers {
   color: #586e75;
 }
