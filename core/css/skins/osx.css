@@ -17,7 +17,7 @@
 
   var-hidden-bg: #404040;
 
-  var-highlight-bg: -webkit-linear-gradient(top, rgb(175, 190, 213), rgb(130, 151, 182));
+  var-highlight-bg: -webkit-linear-gradient(top, rgb(103, 184, 236), rgb(44, 129, 212));
   var-highlight-fg: white;
 
   var-dark-highlight-bg: black;
@@ -31,8 +31,8 @@
   var-pane-bg: -webkit-linear-gradient(top, rgb(232, 236, 241), rgb(208, 216, 224));
   var-pane-scrollbar: #7c7c7c;
   var-dark-pane-bg: -webkit-linear-gradient(top, rgb(232, 236, 241), rgb(208, 216, 224));
-  var-dark-pane-border: rgb(111, 126, 141);
-  var-pane-border: rgb(184, 184, 184);
+  var-dark-pane-border: rgb(204, 204, 204);
+  var-pane-border: rgb(105, 105, 105);
 
   var-error-bg: #8A1C3B;
   var-error-fg: #FFADAD;
@@ -44,8 +44,6 @@
 
   var-result-bg: #0B525E;
   var-result-fg: #96FAFF;
-
-  var-sidebar-border: 1px solid rgb(146, 146, 146);
 
   var-overlay-dimmer: rgba(0,0,0,0.5);
 
@@ -148,7 +146,7 @@ body {
 a {text-decoration:none; color: var(fg); }
 .button, button { background:var(button-bg); color:var(button-fg); }
 .button:hover, .button:focus, button:hover, button:focus { background:var(button-active-bg); color: var(button-active-fg); }
-input { color: var(highlight-fg); background:var(highlight-bg); }
+
 
 /* Get rid of custom scrollbar styles
 ::-webkit-input-placeholder { color: var(placeholder-fg); }
@@ -249,6 +247,7 @@ input { color: var(highlight-fg); background:var(highlight-bg); }
   padding: 0 12px 0 18px;
   background: var(bg);
   box-shadow: inset 7px 10px 9px -10px black;
+  overflow-x: auto;
 }
 
 
@@ -272,6 +271,8 @@ input { color: var(highlight-fg); background:var(highlight-bg); }
 
   -webkit-flex: 1 1 auto;
   flex: 1 1 auto;
+  min-width: 100px;
+  text-overflow: ellipsis;
 
   z-index: 1;
   background: var(tab-bg);
@@ -280,7 +281,7 @@ input { color: var(highlight-fg); background:var(highlight-bg); }
   border: var(tab-border);
 
   border-top-width: 0px;
-  padding: 6px 0px 0px 8px;
+  padding: 6px 8px 0px 8px;
 
   margin-left: -8px;
 
@@ -293,8 +294,8 @@ input { color: var(highlight-fg); background:var(highlight-bg); }
 
 #multi .tabset .list li.active {
   z-index: 2;
-  -webkit-flex: 2;
-  flex: 2;
+  -webkit-flex: 2 1 auto;
+  flex: 1.2 1 auto;
 
   box-shadow: 1px -1px 12px -3px black;
 }
@@ -337,7 +338,8 @@ input { color: var(highlight-fg); background:var(highlight-bg); }
 .filter-list .selected em, .filter-list li:hover em { color:var(accent-foreground); }
 
 #side .content,
-#right-bar .content {
+#right-bar .content,
+#right-bar .filter-list ul {
   background: var(pane-bg);
   border: 1px solid rgb(105, 105, 105);
   box-shadow: inset -7px 7px 9px -10px black;
@@ -347,8 +349,21 @@ input { color: var(highlight-fg); background:var(highlight-bg); }
   border-width: 1px 1px 0 0;
 }
 
+
 #right-bar .content {
-  border-width: 1px 0 0 1px;
+  border-width: 0 0 0 1px;
+  padding: 0;
+  border-top: none;
+  background: transparent;
+  box-shadow: none;
+}
+
+#right-bar .filter-list {
+  padding: 15px 5px;
+}
+
+#right-bar .filter-list ul {
+  border-width: 1px 0 0 0;
 }
 
 /*
@@ -364,7 +379,21 @@ input { color: var(highlight-fg); background:var(highlight-bg); }
 #side .workspace .recent h2:hover { background: var(highlight-bg); color:var(highlight-fg); }
 
 #right-bar .command h2:hover { background:var(highlight-bg); color:var(highlight-fg); }
-#right-bar .command input { background:var(highlight-bg); color:var(highlight-fg); }
+
+input.search,
+#right-bar input.search,
+#right-bar .filter-list input.search {
+  padding: 2px 0 2px 8px;
+  box-shadow: inset 0px 1px 3px -1px rgba(0, 0, 0, 0.7);
+  outline: none;
+  display: border-box;
+  border: 1px solid rgba(0, 0, 0, 0.22);
+  border-radius: 15px;
+  background-clip: padding-box !important;
+  background: white;
+}
+
+
 #right-bar .command li + li { border-top:1px solid var(dark-pane-border); }
 
 #right-bar .filter-list .selected, .filter-list li:hover { color:var(highlight-fg); background: var(highlight-bg); }
