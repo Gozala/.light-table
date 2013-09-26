@@ -1,5 +1,19 @@
 #Changes
 
+##0.5.4
+
+* FIX: Save-all is saving un-modified files #771
+* FIX: Allow spaces in paths for clients #773
+* FIX: "[" then space causes "[[]]" #774
+* FIX: Next tabset doesn't work with instarepl #782
+* FIX: No protocol-IDeref when pressing escape #784
+* FIX: System/out doesn't print to the console #785, #587
+* FIX: Can't bind ctrl-- #793
+* FIX: when watching expressions that return "<...>" values aren't shown #789
+* FIX: Indent settings wasn't correctly respecting use-tabs. #772, #487
+* ADDED: `Instarepl: Toggle live mode` command
+* ADDED: `Workspace: Show workspace on start` behavior #769
+
 ##0.5.3
 
 * FIX: logging on inline browser wasn't always showing inspectables

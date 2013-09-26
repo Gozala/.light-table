@@ -315,6 +315,20 @@
  #{:lt.objs.eval/result-menu! :lt.objs.eval/ex-clear},
  :inline.watch #{:lt.plugins.watches/clear!}
  :inspector.object #{:lt.objs.clients.devtools/clear-inspector-object},
+ :instarepl #{
+              :lt.objs.instarepl/sonar-result 
+              :lt.objs.instarepl/clj-exception
+              :lt.objs.instarepl/on-show-refresh-eds
+              :lt.objs.instarepl/destroy-on-close
+              :lt.objs.instarepl/reroute-watches
+              :lt.objs.instarepl/live-toggle
+              :lt.objs.instarepl/on-focus-focus-ed 
+              :lt.objs.instarepl/no-op 
+              :lt.objs.instarepl/cleanup-on-destroy 
+              :lt.objs.langs.clj/eval-print-err 
+              :lt.objs.langs.clj/eval-print
+              
+              }
  :navigate.selector
  #{:lt.objs.sidebar.navigate/escape!
    :lt.objs.sidebar.navigate/pop-transient-on-select
@@ -472,3 +486,4 @@
    :lt.objs.sidebar.workspace/on-clear
    :lt.objs.sidebar.workspace/add-ws-file},
  :ws.client #{:lt.objs.clients.ws/send!}}}
+
