@@ -1,5 +1,5 @@
 {:+ {:editor.keys.hinting.active {"tab" [:auto-complete]
-                                  "esc" [(:filter-list.input.escape! :force)]}
+                                  "esc" [:auto-complete.remove]}
      :editor.keys.emacs {"ctrl-w" [(:emacs.keymap-cmd "Ctrl-W")]
                          "ctrl-k" [(:emacs.keymap-cmd "Ctrl-K")]
                          "alt-w" [(:emacs.keymap-cmd "Alt-W")]
