@@ -1,9 +1,22 @@
+/**
+Notes:
+
+- Search should not modify #multi style or set `display` on #find
+  instead it should set .searching on body and let `.searching #multi`
+  and `.searching #multi` do a job.
+- `.focused` should be set on `body` so that editor can be styled
+  differently based on weather it's focused or not.
+- Search filed and search result in the same div make it impossible
+  to have margin for search field but not for results.
+
+**/
+
 /**********************************************************
 * Vars
 ***********************************************************/
 
 :root {
-  var-bg: -webkit-linear-gradient(top, rgb(177, 177, 177), rgb(151, 151, 151));
+  var-bg: linear-gradient(to bottom, rgb(177, 177, 177), rgb(151, 151, 151));
   var-fg: rgb(60, 60, 60);
   var-fg-shadow: rgba(255, 255, 255, 0.498039) 0px 1px 0px;
   var-border: rgb(184, 184, 184);
@@ -13,12 +26,13 @@
   var-dim-fg: red;
   var-bright-fg: rgb(60, 60, 60);
   var-blinding-fg: #fff;
-  var-hidden-fg: pink;
+  var-hidden-fg: rgb(70, 70, 70);
 
   var-hidden-bg: #404040;
 
-  var-highlight-bg: -webkit-linear-gradient(top, rgb(103, 184, 236), rgb(44, 129, 212));
+  var-highlight-bg: linear-gradient(to bottom, rgb(103, 184, 236), rgb(44, 129, 212));
   var-highlight-fg: white;
+  var-dim-highlight-fg: #ccc;
 
   var-dark-highlight-bg: black;
   var-medium-highlight-bg: #999;
@@ -28,9 +42,9 @@
   var-button-active-bg: blue;
   var-button-active-fg: #555;
 
-  var-pane-bg: -webkit-linear-gradient(top, rgb(232, 236, 241), rgb(208, 216, 224));
+  var-pane-bg: linear-gradient(to bottom, rgb(232, 236, 241), rgb(208, 216, 224));
   var-pane-scrollbar: #7c7c7c;
-  var-dark-pane-bg: -webkit-linear-gradient(top, rgb(232, 236, 241), rgb(208, 216, 224));
+  var-dark-pane-bg: linear-gradient(to bottom, rgb(232, 236, 241), rgb(208, 216, 224));
   var-dark-pane-border: rgb(204, 204, 204);
   var-pane-border: rgb(105, 105, 105);
 
@@ -47,7 +61,7 @@
 
   var-overlay-dimmer: rgba(0,0,0,0.5);
 
-  var-tab-bg: -webkit-linear-gradient(top, rgb(177, 177, 177), rgb(151, 151, 151));
+  var-tab-bg: linear-gradient(to bottom, rgb(177, 177, 177), rgb(151, 151, 151));
   var-tab-rounding: 0px 0px 6px 6px;
   var-tab-border: 1px solid rgb(105, 105, 105);
 
@@ -120,8 +134,12 @@
 .CodeMirror div.CodeMirror-secondarycursor { border-left: 1px solid silver; }
 .CodeMirror.cm-keymap-fat-cursor div.CodeMirror-cursor { width: auto; border: none !important; background: rgba(0, 200, 200, .4); }
 
-.CodeMirror-gutters { background: var(bg); }
-.cm-s-default .CodeMirror-activeline .CodeMirror-linenumber { background:#474a4f; color:#888; }
+.CodeMirror-gutters {
+  background: var(bg);
+}
+.cm-s-default .CodeMirror-activeline .CodeMirror-linenumber {
+  background:#474a4f; color:#888;
+}
 
 .CodeMirror-hints { position: absolute; z-index: 1000000000000000; overflow: hidden; list-style: none;  margin: 0; padding: 2px;  border-radius: 2px; border: 1px solid var(pane-bg);  background: var(pane-bg); font-size: 90%; font-family: inherit;  max-height: 20em; }
 .CodeMirror-hints ul { overflow-y:auto; max-height:20em; }
@@ -136,16 +154,13 @@
 * Shared
 ***********************************************************/
 
-html { background-image: var(bg); }
 body {
   background: var(bg);
+  background-attachment: fixed;
   color: var(fg);
   font-family: Lucida Grande, sans-serif;
 }
 
-a {text-decoration:none; color: var(fg); }
-.button, button { background:var(button-bg); color:var(button-fg); }
-.button:hover, .button:focus, button:hover, button:focus { background:var(button-active-bg); color: var(button-active-fg); }
 
 
 /* Get rid of custom scrollbar styles
@@ -211,13 +226,10 @@ a {text-decoration:none; color: var(fg); }
   right: 0;
 }
 
-/*
-#multi .tabset {
-  height: auto;
-  padding: 0;
-  margin: 0;
+
+#multi .tabset + .tabset {
+  border-left: 1px solid var(pane-border);
 }
-*/
 
 #multi .list:hover {
   overflow-x:inital;
@@ -235,16 +247,16 @@ a {text-decoration:none; color: var(fg); }
 }
 
 #multi .list.dragging li {
-  background:transparent !important;
+  background: transparent !important;
 }
 
 #multi .dirty.ui-sortable-placeholder:after {
-  content: "  " !important;
+  content: "  ";
 }
 
 #multi .tabset .list {
   margin: 0;
-  padding: 0 12px 0 18px;
+  padding: 0 12px 0 0;
   background: var(bg);
   box-shadow: inset 7px 10px 9px -10px black;
   overflow-x: auto;
@@ -328,14 +340,31 @@ a {text-decoration:none; color: var(fg); }
 .popup ::-webkit-scrollbar-thumb { background: var(accent-foreground); border:1px solid var(accent-foreground); }
 */
 
-#version-info .info dt { color:var(hidden-fg); }
-#version-info .button { background:var(button-bg); color:var(button-fg); border:none; }
-#version-info .button:hover { background: var(button-active-bg); color:var(button-active-fg); }
+#version-info .button {
+  bottom: initial;
+}
 
+/* List item */
 .filter-list { color: var(fg); }
-.filter-list em { color:var(accent-foreground); }
-.filter-list .selected, .filter-list li:hover { color:var(highlight-fg); background: var(highlight-bg);}
-.filter-list .selected em, .filter-list li:hover em { color:var(accent-foreground); }
+/* Text match in list item */
+.filter-list em {
+  text-decoration: underline;
+  font-weight: bold;
+}
+
+/* Selected item menu */
+.filter-list .selected,
+.filter-list li:hover {
+}
+
+/* Selected items match text */
+.filter-list .selected em,
+.filter-list li:hover em {
+}
+
+#side {
+  box-shadow: -1px 1px 5px 0;
+}
 
 #side .content,
 #right-bar .content,
@@ -350,6 +379,10 @@ a {text-decoration:none; color: var(fg); }
 }
 
 
+#right-bar {
+  box-shadow: 1px -1px 5px 0;
+}
+
 #right-bar .content {
   border-width: 0 0 0 1px;
   padding: 0;
@@ -360,6 +393,13 @@ a {text-decoration:none; color: var(fg); }
 
 #right-bar .filter-list {
   padding: 15px 5px;
+}
+
+/* only modify width of the `goto-line` field as there's
+   no better way to deal with this. */
+#right-bar .command.options > .options > div > input {
+  margin: 0 5px;
+  width: 96%;
 }
 
 #right-bar .filter-list ul {
@@ -380,13 +420,26 @@ a {text-decoration:none; color: var(fg); }
 
 #right-bar .command h2:hover { background:var(highlight-bg); color:var(highlight-fg); }
 
+
+/* Search feild in for filtering items */
+input,
 input.search,
+
 #right-bar input.search,
-#right-bar .filter-list input.search {
+#right-bar .filter-list input.search,
+
+/* Input for entering line numbers */
+input.option,
+#right-bar .command input.option,
+
+.searcher input,
+
+#find-bar input
+{
   padding: 2px 0 2px 8px;
   box-shadow: inset 0px 1px 3px -1px rgba(0, 0, 0, 0.7);
   outline: none;
-  display: border-box;
+  display: border-box;3
   border: 1px solid rgba(0, 0, 0, 0.22);
   border-radius: 15px;
   background-clip: padding-box !important;
@@ -396,13 +449,52 @@ input.search,
 
 #right-bar .command li + li { border-top:1px solid var(dark-pane-border); }
 
-#right-bar .filter-list .selected, .filter-list li:hover { color:var(highlight-fg); background: var(highlight-bg); }
-#right-bar .navigate p { color:var(placeholder-fg);  }
-#right-bar .filter-list input { border:1px solid var(pane-border); background:transparent; }
-#right-bar .command p.binding { color:var(placeholder-fg); }
+/* Some items in the filter list won't fit,
+   this adds `...` to such item's text */
+#right-bar .filter-list li h2,
+#right-bar .filter-list li p
+{
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
-#right-bar .navigate li + li { border-top:1px solid var(dark-pane-border); }
+/* Selected list item */
+#right-bar .filter-list .selected {
+  color:var(highlight-fg);
+  background: var(highlight-bg);
+}
 
+/* Hovered list item */
+#right-bar .filter-list li:hover {
+
+}
+
+#right-bar .filter-list input {
+}
+
+
+/* Key bindings in the command bar */
+#right-bar .command p.binding,
+/* File paths in the navigation bar */
+#right-bar .navigate p
+{
+  color:var(placeholder-fg);
+}
+
+/* Key binding for selected command bar item */
+#right-bar .command .selected p.binding,
+/* File path for the seleceted navigation bar item */
+#right-bar .navigate .selected p
+{
+  color: var(dim-highlight-fg);
+}
+
+#right-bar .navigate li + li
+{
+  border-top:1px solid var(dark-pane-border);
+}
+
+/*
 #right-bar .clients h2 { color:var(bright-fg); }
 #right-bar .clients td { color:var(dim-fg); }
 #right-bar .clients .button { background:var(button-bg); color:var(button-fg); }
@@ -422,21 +514,83 @@ input.search,
 #right-bar .clients .connector li:hover h2 {color: var(highlight-fg); }
 #right-bar .clients .connector li:hover {background: var(highlight-bg); color: var(fg); border-color: var(pane-border); }
 #right-bar .clients .toggle:hover { background: var(highlight-bg); border-radius:2px; color:var(highlight-fg); }
+*/
+
+#right-bar .clients {
+
+}
+
+#right-bar .clients .list
+{
+  color: rgba(0, 0, 0, 0.5);
+  text-shadow: 0.6px 0.5px 0.8px rgba(100, 100, 100, 0.5);
+  padding: 10px;
+}
+
+#right-bar .clients .list > ul
+{
+  border-radius: 5px;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+}
+
+#right-bar .clients .list > ul > li {
+  box-shadow: inset 0px 1px 15px -4px;
+  background: var(bg);
+}
+
+/** Buttons */
+button,
+a,
+.button,
+#right-bar .clients .button,
+#right-bar .clients .list > h2,
+
+.searcher button
+{
+  padding: 3px 12px;
+  border-radius: 5px;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0px 1px 10px -4px;
+  min-width: 35px;
+
+  background: transparent;
+  color: rgba(0, 0, 0, 0.5);
+  text-shadow: 0.6px 0.5px 0.8px rgba(100, 100, 100, 0.5);
+}
+
+button,
+a:active,
+.button:active,
+#right-bar .clients .list > h2:active
+{
+  box-shadow: inset 0px 8px 40px -14px;
+}
+
+button:hover,
+a:hover,
+.button:hover,
+#right-bar .clients .list > h2:hover
+{
+  box-shadow: inset 0px 8px 30px -14px;
+}
+
 
 #multi .tabsets {
   bottom: 22px;
   background: var(bg);
+  background-attachment: fixed;
 }
 
 #statusbar {
   color: var(fg);
+  background: var(bg);
   text-shadow: var(fg-shadow);
   font-size: 90%;
   z-index: 20;
   left: 0;
   right: 0;
   padding: 3px 10px;
-  background: -webkit-linear-gradient(top, rgb(151, 151, 151), rgb(177, 177, 177));
+  background-attachment: fixed;
 }
 #statusbar .console-toggle {
   cursor:default;
@@ -451,7 +605,11 @@ input.search,
   border-radius: 6px;
   font-size: 85%;
 }
-#statusbar .console-toggle:hover { background:var(dark-highlight-bg); color:var(highlight-fg); }
+#statusbar .console-toggle:hover
+{
+  background:var(dark-highlight-bg);
+  color:var(highlight-fg);
+}
 #statusbar .console-toggle.dirty {
   border: 1px solid var(fg);
   background: transparent;
@@ -466,13 +624,80 @@ input.search,
 #statusbar .log .error { color:var(error-fg); background:var(error-bg); }
 #statusbar .log .tip { color: var(accent-foreground); }
 
-#find-bar input { border-top:2px solid var(border); }
-#find-bar input + input { border-left:1px solid var(border); }
-#find-bar ::-webkit-input-placeholder { color:var(hidden-fg); }
+/* Bottom search bar */
+#find-bar
+{
+  background: linear-gradient(to bottom, rgb(237, 237, 237), rgb(217, 217, 217));
+  border-top: 1px solid rgb(140, 140, 140);
+  padding: 0 5px;
 
-#browser input { background:var(hidden-bg); color:var(fg); }
-#browser button {  }
-#browser iframe { background:white; }
+  display: -webkit-flex;
+  -webkit-flex-direction: row;
+
+  display: flex;
+  flex-direction: row;
+  font-size: 100%;
+  box-sizing: border-box;
+
+  padding: 2px 8px;
+}
+
+#find-bar input {
+  width: initial;
+  height: initial;
+  font-size: inherit;
+
+  -webkit-flex: 2 1 auto;
+  flex: 2 1 auto;
+  margin-right: 8px;
+}
+
+.searcher button,
+#find-bar button
+{
+  position: initial;
+  padding: 2px 5px;
+  font-size: 80%;
+  border-radius: 12px;
+}
+
+#browser nav {
+  display: -webkit-flex;
+  display: flex;
+  
+  -webkit-flex-direction: row;
+  flex-direction: row;
+  
+  padding: 1px 4px;
+  background: var(bg);
+}
+
+#browser input {
+  background: white;
+  margin-left: 5px;
+}
+
+#browser button {
+  height: initial;
+  width: initial;
+  padding: initial;
+  border-radius: 5px;
+}
+
+#browser button[value=re] {
+  border: none;
+  font-size: 135%;
+  position: absolute;
+  box-shadow: none;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 15px;
+  right: 5px;
+  bottom: 5px;
+}
+
+#browser iframe {
+  background: url(file:///System/Library/Frameworks/AppKit.framework/Versions/C/Resources/NSTexturedFullScreenBackgroundColor.png);
+}
 
 /*
 #browser ::-webkit-scrollbar { background: var(bg) !important; }
@@ -488,15 +713,72 @@ input.search,
 */
 
 
-.search-results .path, .search-results .line { color:var(hidden-fg); }
-.search-results .line { color:var(secondary-accent-desat-fg); }
-.search-results .entry { color: var(placeholder-fg); }
-.search-results .entry em { color:var(blinding-fg); }
-.search-results .entry:hover { background:var(hidden-bg); }
-.search-results .entry:hover .line { background:var(medium-highlight-bg); color:var(bg); }
-.search-results .path { color:var(secondary-accent-dim-fg); }
-.search-results .file { color:var(secondary-accent-fg); }
-.search-results input { background:var(dark-pane-bg); }
+/* Search / Replace page */
+
+.search-results
+{
+  background: var(pane-bg);
+}
+
+.search-results > *
+{
+  padding: 5px;
+}
+
+.search-results .res
+{
+  padding: 0;
+  bottom: 112px;
+}
+
+.search-results .res li
+{
+  padding: 0;
+  margin: 0;  
+}
+
+.search-results li > *
+{
+  padding: 3px;
+}
+
+.search-results .path .file
+{
+  font-weight: bold;
+}
+
+.search-results .entry:nth-child(even)
+{
+  background: white;
+}
+
+.search-results .entry:nth-child(odd)
+{
+  background: rgb(243, 246, 250);
+}
+
+.search-results .entry:hover
+{
+  background: var(highlight-bg);
+  color: var(highlight-fg);
+}
+
+
+.search-results .searcher
+{
+  border-top: 1px solid var(border);
+  display: -webkit-flex;
+  display: flex;
+  
+  -webkit-flex-direction: column;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.search-results .searcher > * {
+  display: -webkit-flex;
+  display: flex;
+}
 
 .watch-result { display:inline-block; padding-left:2px; vertical-align:top; background:var(usage-bg); color:var(usage-fg); border-radius:2px; }
 .CodeMirror .watched { border-bottom:1px solid var(usage-fg); }
